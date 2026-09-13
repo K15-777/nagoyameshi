@@ -51,6 +51,19 @@ footer {
  opacity: 0.8;   
 }
 
+.nagoyameshi-page-link {
+  color: #5196a6;
+}
+
+.nagoyameshi-page-link:hover {
+  color: #407784;
+}
+
+.nagoyameshi-active {
+  background-color: #5196a6 !important;
+  border-color: #5196a6 !important;
+}
+
 @media screen and (min-width: 1400px) {
  .samuraitravel-container {
    max-width: 1200px;
