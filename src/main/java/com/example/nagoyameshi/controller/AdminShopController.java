@@ -1,7 +1,9 @@
 package com.example.nagoyameshi.controller;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,10 +22,10 @@ public class AdminShopController {
 	}
 
 	@GetMapping
-	public String index(Model model) {
-	List<Shop> shops = shopRepository.findAll();
+	public String index(Model model, @PageableDefault(page = 0, size = 10, sort = "id", direction = Direction.ASC) Pageable pageable) {
+	Page<Shop> shopPage = shopRepository.findAll(pageable);
 	
-	model.addAttribute("shops", shops);
+	model.addAttribute("shopPage", shopPage);
 	
 	return "admin/shops/index";
 	}

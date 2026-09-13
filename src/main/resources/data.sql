@@ -1,3 +1,10 @@
+--categoriesテーブル
+INSERT IGNORE INTO categories (id, name) VALUES (1, '和食');
+
+--adminsテーブル（パスワードは平文"password"をBCryptでハッシュ化したもの）
+INSERT IGNORE INTO admins (id, name, email, password) VALUES (1, '管理者', 'admin@example.com', '$2b$10$ai2xPxX53qTVR9ikfpm0K./2DUb9fyfc2EtjdjvSB/Bq/MlYjPfmO');
+
+
 --shopsテーブル
 INSERT IGNORE INTO shops (id, category_id, admin_id, name, address, image_name, description, opening_time, closing_time, lowest_price, highest_price, seating_capacity)
 VALUES (1, 1, 1, 'ひつまぶし 名古屋軒', '愛知県名古屋市中村区名駅1-1-1', 'shop01.jpg', '秘伝のタレで香ばしく焼き上げた絶品ひつまぶし専門店。','11:00', '21:30', 3000, 6000, 40);

@@ -54,7 +54,7 @@
 								</tr>
 							</thead>
 							<tbody>
-								<tr th:each="shop : ${shops}">
+								<tr th:each="shop : ${shopPage}">
 									<td th:text="${shop.getId()}"></td>
 									<td th:text="${shop.getName()}"></td>
 									<td th:text="${shop.getAddress()}"></td>
@@ -65,6 +65,28 @@
 								</tr>
 							</tbody>
 						</table>
+                        
+                        <!-- ページネーション -->
+                        <div th:if="${shopPage.getTotalPages() > 1}" class="d-flex justify-content-center">
+                            <nav aria-label="民宿一覧ページ">
+                                <ul class="pagination">
+                                    <li class="page-item">
+                                        <span th:if="${shopPage.isFirst()}" class="page-link disabled">前</span>
+                                        <a th:unless="${shopPage.isFirst()}" th:href="@{/admin/shops(page = ${shopPage.getNumber() - 1})}" class="page-link nagoyameshi-page-link">前</a>
+                                    </li>
+                                    <li th:each="i : ${#numbers.sequence(0, shopPage.getTotalPages() - 1)}" class="page-item">
+                                        <span th:if="${i == shopPage.getNumber()}" class="page-link active nagoyameshi-active" th:text="${i + 1}"></span>
+                                        <a th:unless="${i == shopPage.getNumber()}" th:href="@{/admin/shops(page = ${i})}" class="page-link nagoyameshi-page-link" th:text="${i + 1}"></a>
+                                    </li>
+                                    <li class="page-item">                        
+                                        <span th:if="${shopPage.isLast()}" class="page-link disabled">次</span>
+                                        <a th:unless="${shopPage.isLast()}" th:href="@{/admin/shops(page = ${shopPage.getNumber() + 1})}" class="page-link nagoyameshi-page-link">次</a>
+                                    </li>
+                                </ul>
+                            </nav> 
+                        </div>     
+                        
+                        
 					</div>
 				</div>
 			</div>
