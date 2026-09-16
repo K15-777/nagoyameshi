@@ -69,3 +69,6 @@ VALUES (20, 1, 1, 'きしめん・うどん 丸八庵', '愛知県名古屋市�
 INSERT IGNORE INTO shops (id, category_id, admin_id, name, address, image_name, description, opening_time, closing_time, lowest_price, highest_price, seating_capacity)
 VALUES (21, 1, 1, '名古屋名物めし処 金鯱食堂', '愛知県名古屋市中区丸の内3-6-2', 'shop01.jpg', '味噌カツからひつまぶしまで名古屋めしを一度に楽しめる定食処。', '11:00', '21:30', 1100, 2800, 55);
 
+--usersテーブル
+INSERT IGNORE INTO users (id, name, email, password, enabled, subscriber)
+VALUES (1, '侍太郎', 'taro.samurai@example.com', '$2a$10$2JNjTwZBwo7fprL2X4sv.OEKqxnVtsVQvuXDkI8xVGix.U3W5B7CO', true, true);
