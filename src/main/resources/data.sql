@@ -19,7 +19,7 @@ INSERT IGNORE INTO shops (id, category_id, admin_id, name, address, image_name, 
 VALUES (4, 1, 1, '味噌煮込みうどん 尾張庵', '愛知県名古屋市中区錦3-15-12', 'shop04.jpg', 'コシのある自家製麺と八丁味噌スープが自慢の老舗うどん処。', '11:00', '20:30', 1000, 2000, 30);
 
 INSERT IGNORE INTO shops (id, category_id, admin_id, name, address, image_name, description, opening_time, closing_time, lowest_price, highest_price, seating_capacity)
-VALUES (5, 1, 1, '台湾ラーメン 龍王閣', '愛知県名古屋市千種区今池1-4-8', 'shop05.jpg', '旨辛ミンチとニンニクが効いた刺激的な台湾ラーメンの名店。', '17:30', '24:00', 800, 1800, 25);
+VALUES (5, 1, 1, '台湾ラーメン 龍王閣', '愛知県名古屋市千種区今池1-4-8', 'shop05.jpg', '旨辛ミンチとニンニクが効いた刺激的な台湾ラーメンの名店。', '17:30', '23:59', 800, 1800, 25);
 
 INSERT IGNORE INTO shops (id, category_id, admin_id, name, address, image_name, description, opening_time, closing_time, lowest_price, highest_price, seating_capacity)
 VALUES (6, 1, 1, 'あんかけスパゲティ パスタハウス栄', '愛知県名古屋市中区栄4-2-15', 'shop06.jpg', 'スパイシーなとろみソースと極太麺がクセになる専門店。', '11:00', '20:30', 900, 1600,28);
@@ -70,5 +70,5 @@ INSERT IGNORE INTO shops (id, category_id, admin_id, name, address, image_name, 
 VALUES (21, 1, 1, '名古屋名物めし処 金鯱食堂', '愛知県名古屋市中区丸の内3-6-2', 'shop01.jpg', '味噌カツからひつまぶしまで名古屋めしを一度に楽しめる定食処。', '11:00', '21:30', 1100, 2800, 55);
 
 --usersテーブル
-INSERT IGNORE INTO users (id, name, email, password, enabled, subscriber)
-VALUES (1, '侍太郎', 'taro.samurai@example.com', '$2a$10$2JNjTwZBwo7fprL2X4sv.OEKqxnVtsVQvuXDkI8xVGix.U3W5B7CO', true, true);
+INSERT IGNORE INTO users (id, name, furigana, email, password, enabled, subscriber)
+VALUES (1, '侍太郎', 'サムライタロウ', 'taro.samurai@example.com', '$2a$10$2JNjTwZBwo7fprL2X4sv.OEKqxnVtsVQvuXDkI8xVGix.U3W5B7CO', true, true);

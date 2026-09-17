@@ -38,7 +38,7 @@
 
 				<h2 class="text-center mb-3">新着</h2>
 				<div class="row row-cols-lg-5 row-cols-2 g-3 mb-5">
-					<div class="col" th:each="newshop : ${newShops}">
+					<div class="col" th:each="newShop : ${newShops}">
 						<a th:href="@{/shops/__${newShop.getId()}__}" class="link-dark nagoyameshi-card-link">
 							<div class="card h-100">
 								<img th:if="${newShop.getImageName()}"
@@ -53,7 +53,7 @@
 									</p>
 									<p class="card-text">
 										<span
-											th:text="${#numbers.formatInteger(newHouse.getLowestPrice(), 1, 'COMMA') + '円～'}"></span>
+											th:text="${#numbers.formatInteger(newShop.getLowestPrice(), 1, 'COMMA') + '円～'}"></span>
 									</p>
 								</div>
 							</div>
