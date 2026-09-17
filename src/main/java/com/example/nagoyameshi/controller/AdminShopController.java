@@ -10,12 +10,14 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.nagoyameshi.entity.Shop;
+import com.example.nagoyameshi.form.ShopEditForm;
 import com.example.nagoyameshi.form.ShopRegisterForm;
 import com.example.nagoyameshi.repository.ShopRepository;
 import com.example.nagoyameshi.service.ShopService;
@@ -63,8 +65,41 @@ public class AdminShopController {
         }
         
         shopService.create(shopRegisterForm);
-        redirectAttributes.addFlashAttribute("successMessage", "民宿を登録しました。");    
+        redirectAttributes.addFlashAttribute("successMessage", "店舗を登録しました。");    
         
         return "redirect:/admin/houses";
     }    
+    
+    @GetMapping("/{id}/edit")
+    public String edit(@PathVariable(name = "id") Integer id, Model model) {
+    	Shop shop = shopRepository.getReferenceById(id);
+    	String imageName = shop.getImageName();
+    	ShopEditForm shopEditForm = new ShopEditForm(shop.getId(), shop.getName(), null, shop.getAddress(), shop.getDescription(), shop.getOpeningTime(), shop.getClosingTime(), shop.getLowestPrice(), shop.getHighestPrice(), shop.getSeatingCapacity());
+    	
+    	model.addAttribute("imageName", imageName );
+    	model.addAttribute("shopEditForm", shopEditForm);
+    	
+    	return "admin/shops/edit";
+    }
+    
+    @PostMapping("/{id}/update")
+    public String update(@ModelAttribute @Validated ShopEditForm shopEditForm, BindingResult bindingResult, RedirectAttributes redirectAttributes) {        
+        if (bindingResult.hasErrors()) {
+            return "admin/shops/edit";
+        }
+        
+        shopService.update(shopEditForm);
+        redirectAttributes.addFlashAttribute("successMessage", "店舗情報を編集しました。");
+        
+        return "redirect:/admin/shops";
+    }    
+    
+    @PostMapping("/{id}/delete")
+    public String delete(@PathVariable(name = "id") Integer id, RedirectAttributes redirectAttributes) {
+    	shopRepository.deleteById(id);
+    	
+    	redirectAttributes.addFlashAttribute("successMessage", "店舗を削除しました。");
+    	
+    	return "redirect:/admin/shops";
+    }
 }

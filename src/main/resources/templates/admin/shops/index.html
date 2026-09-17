@@ -63,6 +63,7 @@
 									<th scope="col">営業開始時間</th>
 									<th scope="col">営業終了時間</th>
 									<th scope="col"></th>
+									<th scope="col"></th>
 								</tr>
 							</thead>
 							<tbody>
@@ -74,6 +75,24 @@
 									<td th:text="${shop.getOpeningTime()}"></td>
 									<td th:text="${shop.getClosingTime()}"></td>
 									<td><a href="#">詳細</a></td>
+									<td><a href="#" class="nagoyameshi-link-danger" data-bs-toggle="modal" th:data-bs-target="${'#deleteShopModal' + shop.getId()}">削除</a></td>
+									
+									<!-- 削除用モーダル -->
+									<div class="modal fade" th:id="${'deleteShopModal' + shop.getId()}" tabindex="-1" th:aria-labelledby="${'deleteShopModalLabel' + shop.getId()}">
+									    <div class="modal-dialog">
+									        <div class="modal-content">
+									            <div class="modal-header">
+									                <h5 class="modal-title" th:id="${'deleteShopModalLabel' + shop.getId()}" th:text="${shop.getName() + 'を削除してもよろしいですか？'}"></h5>
+									                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="閉じる"></button>
+									            </div>
+									            <div class="modal-footer">
+									                <form method="post"th:action="@{/admin/shops/__${shop.getId()}__/delete}">
+									                    <button type="submit" class="btn nagoyameshi-btn-danger text-white shadow-sm">削除</button>
+									                </form>
+									            </div>
+									        </div>
+									    </div>
+									</div> 
 								</tr>
 							</tbody>
 						</table>

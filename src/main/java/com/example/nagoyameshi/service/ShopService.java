@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.nagoyameshi.entity.Shop;
+import com.example.nagoyameshi.form.ShopEditForm;
 import com.example.nagoyameshi.form.ShopRegisterForm;
 import com.example.nagoyameshi.repository.ShopRepository;
 
@@ -47,6 +48,32 @@ public class ShopService {
 		shopRepository.save(shop);
 	}
 
+	@Transactional
+	public void update(ShopEditForm shopEditForm) {
+		Shop shop = shopRepository.getReferenceById(shopEditForm.getId());
+		MultipartFile imageFile = shopEditForm.getImageFile();
+
+		if (!imageFile.isEmpty()) {
+			String imageName = imageFile.getOriginalFilename();
+			String hashedImageName = generateNewFileName(imageName);
+			Path filePath = Paths.get("src/main/resources/static/storage/" + hashedImageName);
+			copyImageFile(imageFile, filePath);
+			shop.setImageName(hashedImageName);
+		}
+
+		shop.setName(shopEditForm.getName());
+		shop.setDescription(shopEditForm.getDescription());
+		shop.setAddress(shopEditForm.getAddress());
+		shop.setOpeningTime(shopEditForm.getOpeningTime());
+		shop.setClosingTime(shopEditForm.getClosingTime());
+		shop.setLowestPrice(shopEditForm.getLowestPrice());
+		shop.setHighestPrice(shopEditForm.getHighestPrice());
+		shop.setSeatingCapacity(shopEditForm.getSeatingCapacity());
+
+		shopRepository.save(shop);
+	}
+
+	// UUIDで生成したファイル名を返す
 	public String generateNewFileName(String fileName) {
 		String[] fileNames = fileName.split("\\.");
 		for (int i = 0; i < fileNames.length - 1; i++) {
