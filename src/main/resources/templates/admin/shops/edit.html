@@ -60,16 +60,16 @@
 									th:src="@{/storage/__${imageName}__}" class="mb-3"></div>
 							<div th:unless="${imageName}" class="row" id="imagePreview"></div>
 
-							<div class="form-group row mb-3">
-								<div class="col-md-4">
-									<label for="address" class="col-form-label text-md-left fw-bold">住所</label>
-								</div>
-								<div class="col-md-8">
-									<div th:if="${#fields.hasErrors('address')}" class="text-danger small mb-2"
-										th:errors="*{address}"></div>
-									<textarea class="form-control" th:field="*{address}" cols="30" rows="2"></textarea>
-								</div>
-							</div>
+                            <div class="form-group row mb-3">
+                                <div class="col-md-4">
+                                    <label for="address" class="col-form-label text-md-left fw-bold">住所</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <div th:if="${#fields.hasErrors('address')}" class="text-danger small mb-2"
+                                        th:errors="*{address}"></div>
+                                    <input type="text" class="form-control" th:field="*{address}">
+                                </div>
+                            </div>
 
 							<div class="form-group row mb-3">
 								<div class="col-md-4">
@@ -90,7 +90,7 @@
 								<div class="col-md-8">
 									<div th:if="${#fields.hasErrors('openingTime')}" class="text-danger small mb-2"
 										th:errors="*{openingTime}"></div>
-									<input type="number" class="form-control" th:field="*{openingTime}">
+									<input type="time" class="form-control" th:field="*{openingTime}">
 								</div>
 							</div>
 
@@ -101,7 +101,7 @@
 								<div class="col-md-8">
 									<div th:if="${#fields.hasErrors('closingTime')}" class="text-danger small mb-2"
 										th:errors="*{closingTime}"></div>
-									<input type="number" class="form-control" th:field="*{closingTime}">
+									<input type="time" class="form-control" th:field="*{closingTime}">
 								</div>
 							</div>
 

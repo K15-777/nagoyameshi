@@ -79,9 +79,13 @@
 							</a>
 
 							<div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownAdmin">
-								<a class="dropdown-item nagoyameshi-dropdown-item" th:href="@{/admin/houses}">店舗一覧</a>
+								<a class="dropdown-item nagoyameshi-dropdown-item" th:href="@{/admin/shops}">店舗一覧</a>
 
 								<div class="dropdown-divider"></div>
+                                
+                                <a class="dropdown-item nagoyameshi-dropdown-item" th:href="@{/admin/users}">会員一覧</a>
+
+                                <div class="dropdown-divider"></div>
 
 								<a class="dropdown-item nagoyameshi-dropdown-item" th:href="@{/logout}"
 									onclick="event.preventDefault(); document.getElementById('logout-form').submit();">

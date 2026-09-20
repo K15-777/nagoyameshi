@@ -61,13 +61,13 @@ public class AdminShopController {
     @PostMapping("/create")
     public String create(@ModelAttribute @Validated ShopRegisterForm shopRegisterForm, BindingResult bindingResult, RedirectAttributes redirectAttributes) {        
         if (bindingResult.hasErrors()) {
-            return "admin/houses/register";
+            return "admin/shops/register";
         }
         
         shopService.create(shopRegisterForm);
         redirectAttributes.addFlashAttribute("successMessage", "店舗を登録しました。");    
         
-        return "redirect:/admin/houses";
+        return "redirect:/admin/shops";
     }    
     
     @GetMapping("/{id}/edit")
