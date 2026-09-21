@@ -12,28 +12,39 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.nagoyameshi.entity.Shop;
+import com.example.nagoyameshi.repository.CategoryRepository;
 import com.example.nagoyameshi.repository.ShopRepository;
 
 @Controller
 @RequestMapping("/shops")
 public class ShopController {
 	private final ShopRepository shopRepository;
+	private final CategoryRepository categoryRepository;
 	
-	public ShopController(ShopRepository shopRepository) {
+	public ShopController(ShopRepository shopRepository, CategoryRepository categoryRepository) {
 		this.shopRepository = shopRepository; 
+		this.categoryRepository = categoryRepository;
 	}
 	
 	@GetMapping
 	public String index(@RequestParam(name = "keyword", required = false) String keyword,
 						@RequestParam(name = "lowestPrice", required = false) Integer lowestPrice,
 						@RequestParam(name = "highestPrice", required = false) Integer highestPrice,
+						@RequestParam(name = "categoryId", required = false) Integer categoryId,
 						@RequestParam(name = "order", required = false) String order,
 						@PageableDefault(page = 0, size = 10, sort = "id", direction = Direction.ASC) Pageable pageable,
 						Model model)
 	{
 		Page<Shop> shopPage;
 		
-		if(keyword != null && !keyword.isEmpty()) {
+		if(categoryId != null) {
+			//カテゴリ絞り込みの並び替え分岐
+			if (order != null && order.equals("lowestPriceAsc")) {
+				shopPage = shopRepository.findByCategoryIdOrderByLowestPriceAsc(categoryId, pageable);
+			}else {
+				shopPage = shopRepository.findByCategoryIdOrderByCreatedAtDesc(categoryId, pageable);
+			}
+		}else if(keyword != null && !keyword.isEmpty()) {
 			if (order != null && order.equals("lowestPriceAsc")) {
 				shopPage = shopRepository.findByNameLikeOrAddressLikeOrderByLowestPriceAsc("%" + keyword + "%", "%" + keyword + "%", pageable);
 			}else {

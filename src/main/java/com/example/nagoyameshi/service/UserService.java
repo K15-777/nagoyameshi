@@ -28,6 +28,7 @@ public class UserService {
 		user.setEmail(signupForm.getEmail());
 		user.setPassword(passwordEncoder.encode(signupForm.getPassword()));	
 		user.setEnabled(false);  
+		user.setSubscriber(false);
 		
 		return userRepository.save(user);
 	}

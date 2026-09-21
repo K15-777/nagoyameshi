@@ -72,6 +72,11 @@ footer {
 	border-color: #5196a6 !important;
 }
 
+.nagoyameshi-pre-wrap {
+  /* 改行文字で行を折り返す */
+  white-space: pre-wrap;
+}
+
 .nagoyameshi-vertical-card-image {
 	width: 100%;
 	height: 150px;

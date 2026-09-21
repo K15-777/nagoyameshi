@@ -65,7 +65,7 @@ public class WebSecurityConfig {
         http
             .authenticationProvider(userAuthProvider)   // ← このチェーンではUserDetailsServiceImplを使う
             .authorizeHttpRequests((requests) -> requests
-                .requestMatchers("/css/**", "/images/**", "/js/**", "/storage/**", "/", "/signup/**", "/shops", "shops/{id}").permitAll()
+                .requestMatchers("/css/**", "/images/**", "/js/**", "/storage/**", "/", "/signup/**", "/shops", "/shops/{id}").permitAll()
                 .anyRequest().authenticated()
             )
             .formLogin((form) -> form

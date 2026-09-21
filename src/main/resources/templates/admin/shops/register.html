@@ -12,7 +12,7 @@
 <body>
 	<div class="nagoyameshi-wrapper">
 		<!-- ヘッダー -->
-		<div th:replace="~{fragment :: header}"></div>
+		<div th:replace="~{fragment :: adminHeader}"></div>
 
 		<main>
 			<div class="container pt-4 pb-5 nagoyameshi-container">
@@ -53,6 +53,22 @@
 
 							<!-- 選択された画像の表示場所 -->
 							<div class="row" id="imagePreview"></div>
+                            
+                            <div class="form-group row mb-3">
+                                <div class="col-md-4">
+                                    <label for="categoryId" class="col-form-label text-md-left fw-bold">カテゴリ</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <div th:if="${#fields.hasErrors('categoryId')}" class="text-danger small mb-2"
+                                        th:errors="*{categoryId}"></div>
+                                    <select class="form-control" th:field="*{categoryId}">
+                                        <option value="">選択してください</option>
+                                        <option th:each="category : ${categories}"
+                                            th:value="${category.getId()}"
+                                            th:text="${category.getName()}"></option>
+                                    </select>
+                                </div>
+                            </div>
 
 							<div class="form-group row mb-3">
 								<div class="col-md-4">

@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
 
 import lombok.Data;
@@ -14,6 +15,9 @@ import lombok.Data;
 public class ShopRegisterForm {
 	@NotBlank(message = "店舗名を入力してください。")
 	private String name;
+	
+	@NotNull(message = "カテゴリを選択してください。")
+	private Integer categoryId;
 	
 	private MultipartFile imageFile;
 	
@@ -24,9 +28,11 @@ public class ShopRegisterForm {
 	private String description;
 	
 	@NotNull(message = "営業開始時間を入力してください。")
+	@DateTimeFormat(pattern = "HH:mm")
 	private LocalTime openingTime;
 	
 	@NotNull(message = "営業終了時間を入力してください。")
+	@DateTimeFormat(pattern = "HH:mm")
 	private LocalTime closingTime;
 	
 	@NotNull(message = "下限価格を入力してください。")

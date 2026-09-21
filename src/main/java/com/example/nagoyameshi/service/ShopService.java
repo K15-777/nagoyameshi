@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.example.nagoyameshi.entity.Admin;
+import com.example.nagoyameshi.entity.Category;
 import com.example.nagoyameshi.entity.Shop;
 import com.example.nagoyameshi.form.ShopEditForm;
 import com.example.nagoyameshi.form.ShopRegisterForm;
@@ -19,12 +21,13 @@ import com.example.nagoyameshi.repository.ShopRepository;
 public class ShopService {
 	private final ShopRepository shopRepository;
 
+
 	public ShopService(ShopRepository shopRepository) {
-		this.shopRepository = shopRepository;
+	    this.shopRepository = shopRepository;
 	}
 
 	@Transactional
-	public void create(ShopRegisterForm shopRegisterForm) {
+	public void create(ShopRegisterForm shopRegisterForm, Admin admin, Category category) {
 		Shop shop = new Shop();
 		MultipartFile imageFile = shopRegisterForm.getImageFile();
 
@@ -35,7 +38,9 @@ public class ShopService {
 			copyImageFile(imageFile, filePath);
 			shop.setImageName(hashedImageName);
 		}
-
+		
+		shop.setCategory(category);
+		shop.setAdmin(admin);
 		shop.setName(shopRegisterForm.getName());
 		shop.setDescription(shopRegisterForm.getDescription());
 		shop.setAddress(shopRegisterForm.getAddress());
