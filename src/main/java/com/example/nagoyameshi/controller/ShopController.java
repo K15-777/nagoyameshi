@@ -75,6 +75,9 @@ public class ShopController {
 		model.addAttribute("highestPrice", highestPrice);
 		model.addAttribute("order", order);
 		
+		model.addAttribute("categoryId", categoryId);
+		model.addAttribute("categories", categoryRepository.findAllByOrderByCreatedAtAsc());
+		
 		return "shops/index";
 	}
 	
