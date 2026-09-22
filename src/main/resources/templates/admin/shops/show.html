@@ -84,6 +84,26 @@
 
                             <div class="row pb-2 mb-2 border-bottom">
                                 <div class="col-4">
+                                    <span class="fw-bold">営業開始時間</span>
+                                </div>
+
+                                <div class="col">
+                                    <span class="nagoyameshi-pre-wrap" th:text="${shop.getOpeningTime()}"></span>
+                                </div>
+                            </div>
+
+                            <div class="row pb-2 mb-2 border-bottom">
+                                <div class="col-4">
+                                    <span class="fw-bold">営業終了時間</span>
+                                </div>
+
+                                <div class="col">
+                                    <span class="nagoyameshi-pre-wrap" th:text="${shop.getClosingTime()}"></span>
+                                </div>
+                            </div>
+
+                            <div class="row pb-2 mb-2 border-bottom">
+                                <div class="col-4">
                                     <span class="fw-bold">下限価格</span>
                                 </div>
 
