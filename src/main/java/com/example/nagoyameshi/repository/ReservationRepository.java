@@ -9,5 +9,5 @@ import com.example.nagoyameshi.entity.User;
 
 public interface ReservationRepository extends JpaRepository<Reservation, Integer> {
 	// ログイン中の会員の予約一覧（新しい予約日時順）
-	public Page<Reservation> findByUserOrderByReservedDatetimeDesc(User user, Pageable pageable);
+	public Page<Reservation> findByUserOrderByCreatedAtDesc(User user, Pageable pageable);
 }

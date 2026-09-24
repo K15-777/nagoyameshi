@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.nagoyameshi.entity.Shop;
+import com.example.nagoyameshi.form.ReservationInputForm;
 import com.example.nagoyameshi.repository.CategoryRepository;
 import com.example.nagoyameshi.repository.ShopRepository;
 
@@ -86,6 +87,7 @@ public class ShopController {
 		Shop shop = shopRepository.getReferenceById(id);
 		
 		model.addAttribute("shop", shop);
+		model.addAttribute("reservationInputForm", new ReservationInputForm());
 		
 		return "shops/show";
 	}

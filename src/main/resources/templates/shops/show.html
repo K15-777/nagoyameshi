@@ -106,7 +106,8 @@
                                     </div>
 
                                 </div>
-
+                                
+                                <!-- 未ログインの場合：ログインを促す -->
                                 <div sec:authorize="isAnonymous()" class="col-lg-4 px-0 ps-lg-4 mb-4">
                                     <div class="card">
                                         <div class="card-body">
@@ -115,6 +116,61 @@
                                                 disabled>予約する</button>
                                         </div>
                                     </div>
+                                </div>
+                                                                
+                                <!-- 2. ログイン済みの場合 -->
+                                <div sec:authorize="isAuthenticated()" class="col-lg-4 px-0 ps-lg-4 mb-4">
+                                    <!-- 2-A. 有料会員（subscriber == true）：予約フォームを表示 -->
+                                    <div th:if="${#authentication.principal.user.subscriber}" class="card">                                                                                                
+                                        <div class="card-body">
+                                            <form method="get"
+                                                th:action="@{/shops/__${shop.getId()}__/reservations/input}"
+                                                th:object="${reservationInputForm}">
+                                                <div class="form-group mb-2">
+                                                    <label for="reservationDate"
+                                                        class="col-form-label text-md-left fw-bold">予約日</label>
+                                                    <div th:if="${#fields.hasErrors('reservationDate')}"
+                                                        class="text-danger small mb-2" th:errors="*{reservationDate}">
+                                                    </div>
+                                                    <input type="date" class="form-control"
+                                                        th:field="*{reservationDate}">
+                                                </div>
+
+                                                <div class="form-group mb-2">
+                                                    <label for="reservationDate"
+                                                        class="col-form-label text-md-left fw-bold">予約時間</label>
+                                                    <div th:if="${#fields.hasErrors('fromCheckinTime')}"
+                                                        class="text-danger small mb-2" th:errors="*{fromCheckinTime}">
+                                                    </div>
+                                                    <input type="time" class="form-control"
+                                                        th:field="*{fromCheckinTime}">
+                                                </div>
+
+                                                <div class="form-group mb-4">
+                                                    <label for="numberOfPeople"
+                                                        class="col-form-label text-md-left fw-bold">予約人数</label>
+                                                    <div th:if="${#fields.hasErrors('numberOfPeople')}"
+                                                        class="text-danger small mb-2" th:errors="*{numberOfPeople}">
+                                                    </div>
+                                                    <input type="number" class="form-control"
+                                                        th:field="*{numberOfPeople}" min="1">
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <button type="submit"
+                                                        class="btn text-white shadow-sm w-100 samuraitravel-btn">予約する</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- 2-B. 無料会員（subscriber == false または null）：有料登録を促す -->
+                                    <div th:unless="${#authentication.principal.user.subscriber}" class="card">
+                                        <div class="card-body">
+                                            <p class="card-text">予約するには<a th:href="@{#}">有料会員登録</a>が必要です。</p>
+                                            <button type="button" class="btn text-white shadow-sm w-100 nagoyameshi-btn" disabled>予約する</button>
+                                        </div>
+                                    </div>                                        
                                 </div>
                             </div>
                         </div>
