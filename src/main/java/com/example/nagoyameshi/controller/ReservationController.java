@@ -81,10 +81,13 @@ public class ReservationController {
 	            bindingResult.addError(fieldError);
 	        }
 	    }
-	
+	    
+	    // ---- エラーがある場合はリダイレクトせず、同じ入力ページ（店舗詳細）を返す ----
 	    if(bindingResult.hasErrors()) {
 	    	model.addAttribute("shop", shop);
+	    	model.addAttribute("reservationInputForm", reservationInputForm);
 	    	model.addAttribute("errorMessage", "予約内容に不備があります。");
+	    	return "shops/show";
 	    }
 	
 	    redirectAttributes.addFlashAttribute("reservationInputForm", reservationInputForm);

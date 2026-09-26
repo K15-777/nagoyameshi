@@ -68,4 +68,18 @@ public class UserService {
 		User currentUser = userRepository.getReferenceById(userEditForm.getId());
 		return !userEditForm.getEmail().equals(currentUser.getEmail());
 	}
+	
+	// 有料会員に登録する
+	@Transactional
+	public void registerSubscriber(User user) {
+		user.setSubscriber(true);
+		userRepository.save(user);
+	}
+	
+	// 有料会員を解約する
+	@Transactional
+	public void cancelSubscriber(User user) {
+		user.setSubscriber(false);
+		userRepository.save(user);
+	}
 }

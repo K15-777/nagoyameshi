@@ -62,13 +62,18 @@
                             </a>
 
                             <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownGeneral">
-                                <a class="dropdown-item samuraitravel-dropdown-item" th:href="@{/user}">会員情報</a>
+                                <a class="dropdown-item nagoyameshi-dropdown-item" th:href="@{/user}">会員情報</a>
 
                                 <!-- ▼ 有料会員（subscriber == true）のみ表示 ▼ -->
                                 <div th:if="${#authentication.principal.user.subscriber}">
                                     <div class="dropdown-divider"></div>
                                     <a class="dropdown-item nagoyameshi-dropdown-item"
                                         th:href="@{/reservations}">予約一覧</a>
+
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item nagoyameshi-dropdown-item"
+                                        th:href="@{/favorites}">お気に入り一覧</a>
+                       
                                 </div>
 
                                 <div class="dropdown-divider"></div>

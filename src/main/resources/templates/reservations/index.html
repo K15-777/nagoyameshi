@@ -67,7 +67,7 @@
 												<div class="modal-body">
 													<p>この予約をキャンセルしてもよろしいですか？</p>
 													<p><strong th:text="${reservation.getShop().getName()}"></strong></p>
-													<p>日時: <span th:text="${reservation.getReservedDate()}"></span> <span th:text="${reservation.getFromCheckinTime()}"></span></p>
+													<p>日時: <span th:text="${reservation.getReservationDate()}"></span> <span th:text="${reservation.getFromCheckinTime()}"></span></p>
 												</div>
 												<div class="modal-footer">
 													<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">戻る</button>

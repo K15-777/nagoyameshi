@@ -26,6 +26,30 @@
                             </ol>
                         </nav>
 
+                        <!-- お気に入りボタン（ログイン時かつ有料会員のみ表示） -->
+                        <div sec:authorize="isAuthenticated()" th:if="${#authentication.principal.user.subscriber}"
+                            class="text-end mb-2">
+                            <!-- 登録済みの場合（解除リンクとフォーム） -->
+                            <div th:if="${isFavorite}">
+                                <a href="javascript:void(0)"
+                                    onclick="document.getElementById('favorite-delete-form').submit();">&#9829;
+                                    お気に入り解除</a>
+                                <form id="favorite-delete-form" class="d-none" method="post"
+                                    th:action="@{/shops/__${shop.getId()}__/favorites/__${favorite.getId()}__/delete}">
+                                </form>
+                            </div>
+
+                            <!-- 未登録の場合（追加リンクとフォーム） -->
+                            <div th:unless="${isFavorite}">
+                                <a href="javascript:void(0)"
+                                    onclick="document.getElementById('favorite-create-form').submit();">&#9825;
+                                    お気に入り追加</a>
+                                <form id="favorite-create-form" class="d-none" method="post"
+                                    th:action="@{/shops/__${shop.getId()}__/favorites/create}"></form>
+                            </div>
+                        </div>
+
+
                         <h1 class="mb-4 text-center" th:text="${shop.getName()}"></h1>
 
                         <div th:if="${errorMessage}" class="alert alert-danger">
@@ -106,7 +130,7 @@
                                     </div>
 
                                 </div>
-                                
+
                                 <!-- 未ログインの場合：ログインを促す -->
                                 <div sec:authorize="isAnonymous()" class="col-lg-4 px-0 ps-lg-4 mb-4">
                                     <div class="card">
@@ -117,11 +141,11 @@
                                         </div>
                                     </div>
                                 </div>
-                                                                
+
                                 <!-- 2. ログイン済みの場合 -->
                                 <div sec:authorize="isAuthenticated()" class="col-lg-4 px-0 ps-lg-4 mb-4">
                                     <!-- 2-A. 有料会員（subscriber == true）：予約フォームを表示 -->
-                                    <div th:if="${#authentication.principal.user.subscriber}" class="card">                                                                                                
+                                    <div th:if="${#authentication.principal.user.subscriber}" class="card">
                                         <div class="card-body">
                                             <form method="get"
                                                 th:action="@{/shops/__${shop.getId()}__/reservations/input}"
@@ -158,20 +182,104 @@
 
                                                 <div class="form-group">
                                                     <button type="submit"
-                                                        class="btn text-white shadow-sm w-100 samuraitravel-btn">予約する</button>
+                                                        class="btn text-white shadow-sm w-100 nagoyameshi-btn">予約する</button>
                                                 </div>
                                             </form>
                                         </div>
                                     </div>
-                                    
+
                                     <!-- 2-B. 無料会員（subscriber == false または null）：有料登録を促す -->
                                     <div th:unless="${#authentication.principal.user.subscriber}" class="card">
                                         <div class="card-body">
                                             <p class="card-text">予約するには<a th:href="@{#}">有料会員登録</a>が必要です。</p>
-                                            <button type="button" class="btn text-white shadow-sm w-100 nagoyameshi-btn" disabled>予約する</button>
+                                            <button type="button" class="btn text-white shadow-sm w-100 nagoyameshi-btn"
+                                                disabled>予約する</button>
                                         </div>
-                                    </div>                                        
+                                    </div>
                                 </div>
+                            </div>
+                        </div>
+
+                        <!-- レビューセクション -->
+                        <div class="container px-0">
+                            <h2 class="mb-4 text-center">レビュー</h2>
+
+                            <!-- 有料会員かつ未投稿の場合のみ投稿ボタンを表示 -->
+                            <div sec:authorize="isAuthenticated()"
+                                th:if="${#authentication.principal.user.subscriber && !hasUserReviewed}"
+                                class="text-center mb-4">
+                                <a th:href="@{/shops/__${shop.getId()}__/reviews/register}"
+                                    class="btn text-white shadow-sm px-5 nagoyameshi-btn">レビューを投稿する</a>
+                            </div>
+
+                            <div th:if="${#lists.isEmpty(reviewList)}" class="text-center mb-4">
+                                <p>まだレビューがありません。</p>
+                            </div>
+
+                            <div th:unless="${#lists.isEmpty(reviewList)}"
+                                class="row row-cols-1 row-cols-md-2 g-4 mb-4">
+                                <div th:each="review : ${reviewList}" class="col">
+                                    <div class="card h-100">
+                                        <div class="card-body">
+                                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                                <h5 class="card-title mb-0" th:text="${review.getUser().getName()}">
+                                                </h5>
+
+                                                <!-- ログイン中の本人にのみ編集・削除を表示 -->
+                                                <div sec:authorize="isAuthenticated()"
+                                                    th:if="${#authentication.principal.user.id == review.getUser().getId()}">
+                                                    <a th:href="@{/shops/__${shop.getId()}__/reviews/__${review.getId()}__/edit}"
+                                                        class="me-2">編集</a>
+                                                    <a href="#" class="nagoyameshi-link-danger" data-bs-toggle="modal"
+                                                        th:data-bs-target="${'#deleteReviewModal' + review.getId()}">削除</a>
+
+                                                    <!-- 削除用モーダル -->
+                                                    <div class="modal fade"
+                                                        th:id="${'deleteReviewModal' + review.getId()}" tabindex="-1"
+                                                        th:aria-labelledby="${'deleteReviewModalLabel' + review.getId()}">
+                                                        <div class="modal-dialog">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title"
+                                                                        th:id="${'deleteReviewModalLabel' + review.getId()}"
+                                                                        th:text="${shop.getName() + 'のレビューを削除してもよろしいですか？'}">
+                                                                    </h5>
+                                                                    <button type="button" class="btn-close"
+                                                                        data-bs-dismiss="modal"
+                                                                        aria-label="閉じる"></button>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <form method="post"
+                                                                        th:action="@{/shops/__${shop.getId()}__/reviews/__${review.getId()}__/delete}">
+                                                                        <button type="submit"
+                                                                            class="btn nagoyameshi-btn-danger text-white shadow-sm">削除</button>
+                                                                    </form>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <p class="card-text mb-1">
+                                                <span class="text-warning">
+                                                    <th:block th:each="i : ${#numbers.sequence(1, 5)}">
+                                                        <span th:if="${i <= review.getRating()}">&#9733;</span>
+                                                        <span th:unless="${i <= review.getRating()}">&#9734;</span>
+                                                    </th:block>
+                                                </span>
+                                            </p>
+                                            <p class="card-text text-muted small"
+                                                th:text="${#dates.format(review.getCreatedAt(), 'yyyy年MM月dd日')}">
+                                            </p>
+                                            <p class="card-text" th:text="${review.getComment()}"></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div th:unless="${#lists.isEmpty(reviewList)}" class="text-center mb-4">
+                                <a th:href="@{/shops/__${shop.getId()}__/reviews}">すべてのレビューを見る</a>
                             </div>
                         </div>
                     </div>

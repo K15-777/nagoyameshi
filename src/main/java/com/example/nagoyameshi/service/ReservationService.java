@@ -49,13 +49,28 @@ public class ReservationService {
 		reservationRepository.deleteById(reservationId);
 	}
 	
-	// 宿泊人数が定員以下かどうかをチェックする
+	// 予約人数が定員以下かどうかをチェックする
 	public boolean isWithinSeatingCapacity(Integer numberOfPeople, Integer seatingCapacity) {
 		return numberOfPeople <= seatingCapacity;
 	}
 	
-	// 予約時間が営業時間内かどうかをチェックする
+	// 予約時間が営業時間内かどうかをチェックする（深夜跨ぎ対応）
 	public boolean isWithinOperatingHours(LocalTime fromCheckinTime, LocalTime openingTime, LocalTime closingTime) {
-		return !fromCheckinTime.isBefore(openingTime) && !fromCheckinTime.isAfter(closingTime);
+		if(fromCheckinTime == null || openingTime == null || closingTime == null) {
+			return false;
+		}
+		
+		// 同時刻（開店 == 閉店）は24時間営業とみなす（必要がなければ別扱い）
+	    if (openingTime.equals(closingTime)) {
+	        return true;
+	    }
+	    
+	    // 通常（同日内）: 開 <= 閉 の場合
+	    if (!closingTime.isBefore(openingTime)) {
+	        return !fromCheckinTime.isBefore(openingTime) && !fromCheckinTime.isAfter(closingTime);
+	    }
+	    
+	    // 深夜跨ぎ（例: 開 18:00, 閉 04:00）: 有効時間は [開店, 23:59..] または [00:00, 閉店]
+	    return !fromCheckinTime.isBefore(openingTime) || !fromCheckinTime.isAfter(closingTime);
 	}
 }

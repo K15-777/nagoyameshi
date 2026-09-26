@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 import org.springframework.format.annotation.DateTimeFormat;
@@ -13,7 +12,7 @@ import lombok.Data;
 
 @Data
 public class ReservationInputForm {
-	@NotBlank(message = "日にちを入力してください。")
+	@NotNull(message = "日にちを入力してください。")
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private LocalDate reservationDate;
 	
