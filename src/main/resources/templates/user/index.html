@@ -82,7 +82,9 @@
                                     <!-- 無料会員の場合 -->
                                     <span th:unless = "${user.subscriber}">
                                         無料会員(<a th:href = "@{/subscription/register}">有料プランに登録する</a>)
+                                    </span>
                                 </div>
+                            </div>
                         </div>
                     </div>
                 </div>

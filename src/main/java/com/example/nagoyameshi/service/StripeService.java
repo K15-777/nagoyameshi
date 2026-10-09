@@ -16,6 +16,7 @@ import com.stripe.model.StripeObject;
 import com.stripe.model.Subscription;
 import com.stripe.model.SubscriptionCollection;
 import com.stripe.model.checkout.Session;
+import com.stripe.net.ApiResource;
 import com.stripe.param.SubscriptionListParams;
 import com.stripe.param.checkout.SessionCreateParams;
 
@@ -72,32 +73,34 @@ public class StripeService {
         }
     }
 
-    // Webhookから呼ばれる：Checkoutセッション完了時にDBを更新する
+ // Webhookから呼ばれる：Checkoutセッション完了時にDBを更新する
+ // Webhookから呼ばれる：Checkoutセッション完了時にDBを更新する
     public void processCheckoutSessionCompleted(Event event) {
         Optional<StripeObject> optionalStripeObject = event.getDataObjectDeserializer().getObject();
 
-        optionalStripeObject.ifPresentOrElse(stripeObject -> {
-            Session session = (Session) stripeObject;
-
-            String userIdString = session.getMetadata().get("userId");
-            String stripeCustomerId = session.getCustomer();
-
-            if (userIdString == null) {
-                System.out.println("userIdがメタデータに存在しません。");
-                return;
-            }
-
-            Integer userId = Integer.valueOf(userIdString);
-            User user = userRepository.getReferenceById(userId);
-
-            userService.saveStripeCustomerId(user, stripeCustomerId); // Stripe顧客IDを保存
-            userService.registerSubscriber(user); // 有料会員として登録
-
-            System.out.println("有料プラン登録処理が成功しました。userId=" + userId);
-        },
-        () -> {
-            System.out.println("有料プラン登録処理が失敗しました。");
+        StripeObject stripeObject = optionalStripeObject.orElseGet(() -> {
+            // API version不一致でデシリアライズに失敗した場合、rawJsonから手動で変換する
+            String rawJson = event.getDataObjectDeserializer().getRawJson();
+            return ApiResource.GSON.fromJson(rawJson, Session.class);
         });
+
+        Session session = (Session) stripeObject;
+
+        String userIdString = session.getMetadata().get("userId");
+        String stripeCustomerId = session.getCustomer();
+
+        if (userIdString == null) {
+            System.out.println("userIdがメタデータに存在しません。");
+            return;
+        }
+
+        Integer userId = Integer.valueOf(userIdString);
+        User user = userRepository.getReferenceById(userId);
+
+        userService.saveStripeCustomerId(user, stripeCustomerId);
+        userService.registerSubscriber(user);
+
+        System.out.println("有料プラン登録処理が成功しました。userId=" + userId);
     }
 
     // 有料プランの解約（Checkoutを使わず直接APIで解約する）

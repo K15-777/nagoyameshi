@@ -1,6 +1,9 @@
 package com.example.nagoyameshi.controller;
 
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -16,6 +19,7 @@ import com.example.nagoyameshi.entity.User;
 import com.example.nagoyameshi.form.UserEditForm;
 import com.example.nagoyameshi.repository.UserRepository;
 import com.example.nagoyameshi.security.UserDetailsImpl;
+import com.example.nagoyameshi.security.UserDetailsServiceImpl;
 import com.example.nagoyameshi.service.UserService;
 
 @Controller
@@ -23,19 +27,35 @@ import com.example.nagoyameshi.service.UserService;
 public class UserController {
     private final UserRepository userRepository;
     private final UserService userService;
+    private final UserDetailsServiceImpl userDetailsServiceImpl;
     
-    public UserController(UserRepository userRepository, UserService userService) {
+    public UserController(UserRepository userRepository, UserService userService, UserDetailsServiceImpl userDetailsServiceImpl) {
         this.userRepository = userRepository;
         this.userService = userService;
+        this.userDetailsServiceImpl = userDetailsServiceImpl;
     }    
     
     @GetMapping
     public String index(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, Model model) {         
         User user = userRepository.getReferenceById(userDetailsImpl.getUser().getId());  
         
+        // Stripeの決済完了/解約直後は、ログインセッション内のsubscriber情報が古いままになっているため、
+        // DBの最新情報でSecurityContextの認証情報を作り直す（画面表示を即時に正しく反映させるため）
+        refreshAuthentication(user.getEmail());
+        
         model.addAttribute("user", user);
         
         return "user/index";
+    }
+    
+    // ログインセッションの認証情報（Authentication）をDBの最新のUser情報で作り直す
+    private void refreshAuthentication(String email) {
+        UserDetails refreshedUserDetails = userDetailsServiceImpl.loadUserByUsername(email);
+        
+        UsernamePasswordAuthenticationToken newAuthentication = new UsernamePasswordAuthenticationToken(
+                refreshedUserDetails, null, refreshedUserDetails.getAuthorities());
+        
+        SecurityContextHolder.getContext().setAuthentication(newAuthentication);
     }
     
     @GetMapping("/edit")
