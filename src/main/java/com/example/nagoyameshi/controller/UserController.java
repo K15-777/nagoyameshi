@@ -2,8 +2,11 @@ package com.example.nagoyameshi.controller;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -22,12 +25,16 @@ import com.example.nagoyameshi.security.UserDetailsImpl;
 import com.example.nagoyameshi.security.UserDetailsServiceImpl;
 import com.example.nagoyameshi.service.UserService;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
 @Controller
 @RequestMapping("/user")
 public class UserController {
     private final UserRepository userRepository;
     private final UserService userService;
     private final UserDetailsServiceImpl userDetailsServiceImpl;
+    private final SecurityContextRepository securityContextRepository = new HttpSessionSecurityContextRepository();
     
     public UserController(UserRepository userRepository, UserService userService, UserDetailsServiceImpl userDetailsServiceImpl) {
         this.userRepository = userRepository;
@@ -36,12 +43,13 @@ public class UserController {
     }    
     
     @GetMapping
-    public String index(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, Model model) {         
+    public String index(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, Model model,
+            HttpServletRequest request, HttpServletResponse response) {         
         User user = userRepository.getReferenceById(userDetailsImpl.getUser().getId());  
         
         // Stripeの決済完了/解約直後は、ログインセッション内のsubscriber情報が古いままになっているため、
         // DBの最新情報でSecurityContextの認証情報を作り直す（画面表示を即時に正しく反映させるため）
-        refreshAuthentication(user.getEmail());
+        refreshAuthentication(user.getEmail(), request, response);
         
         model.addAttribute("user", user);
         
@@ -49,13 +57,19 @@ public class UserController {
     }
     
     // ログインセッションの認証情報（Authentication）をDBの最新のUser情報で作り直す
-    private void refreshAuthentication(String email) {
+    // Spring Security 6以降はrequireExplicitSaveがデフォルトで有効なため、
+    // SecurityContextHolderへの設定だけではHTTPセッションに反映されない。
+    // そのためSecurityContextRepositoryへ明示的に保存する必要がある。
+    private void refreshAuthentication(String email, HttpServletRequest request, HttpServletResponse response) {
         UserDetails refreshedUserDetails = userDetailsServiceImpl.loadUserByUsername(email);
         
         UsernamePasswordAuthenticationToken newAuthentication = new UsernamePasswordAuthenticationToken(
                 refreshedUserDetails, null, refreshedUserDetails.getAuthorities());
         
-        SecurityContextHolder.getContext().setAuthentication(newAuthentication);
+        SecurityContext context = SecurityContextHolder.createEmptyContext();
+        context.setAuthentication(newAuthentication);
+        SecurityContextHolder.setContext(context);
+        securityContextRepository.saveContext(context, request, response);
     }
     
     @GetMapping("/edit")
